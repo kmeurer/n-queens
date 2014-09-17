@@ -5,7 +5,6 @@
 (function() {
 
   window.Board = Backbone.Model.extend({
-
     initialize: function (params) {
       if (_.isUndefined(params) || _.isNull(params)) {
         console.log('Good guess! But to use the Board() constructor, you must pass it an argument in one of the following formats:');
@@ -79,12 +78,33 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      var rows = this.rows();
+      // take in rowIndex
+      var thisRow = rows[rowIndex];
+      // cycle through the row specified by rowIndex
+      var accumulator = 0;
+      for ( var i = 0 ; i < thisRow.length; i++ ){
+        // add up values within row
+        accumulator += thisRow[i];
+        // if result is greater than zero, return true
+        if( accumulator > 1){
+          return true;
+        }
+      }
+      //return false if no conflict
+      return false;
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+      var rows = this.rows();
+      // iterate through all rows to test if matrix has any conflicts
+      for ( var i = 0; i < rows.length; i++ ){
+        if ( this.hasRowConflictAt(i)){
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -94,11 +114,32 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      // get rows
+      var rows = this.rows();
+      // declare accumulator,
+      var accumulator = 0;
+      //iterate thru rows
+      for(var i = 0; i < rows.length; i++) {
+      // for each i value, test that i value's colIndex
+        accumulator += rows[i][colIndex];
+        // if accum > 1, return true
+        if(accumulator > 1) {
+          return true;
+        }
+      }
+
+      return false;
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
+      var rows = this.rows();
+      for(var i = 0; i < rows.length; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
+
       return false; // fixme
     },
 
@@ -109,12 +150,33 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var rows = this.rows();
+      var accumulator = 0;
+      // iterate through rows
+      for( var i = 0, j = majorDiagonalColumnIndexAtFirstRow; i < rows.length && j < rows.length; i++, j++){
+        accumulator += rows[i][j];
+        if ( accumulator > 1 ){
+          return true;
+        }
+      }
+      return false;
+
+
+      // if majorDiagonalColumnIndexAtFirstRow is 0
+        // test normally
+        // test again until testing an array with
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      var rows = this.rows();
+      // iterate through rows at particular indexes
+      for ( var i = 0; i < rows.length-1; i++){
+        if( this.hasMajorDiagonalConflictAt(i)){
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -124,12 +186,28 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
+      var rows = this.rows();
+      var accumulator = 0;
+      // iterate through rows
+      for( var i = 0, j = minorDiagonalColumnIndexAtFirstRow; i < rows.length && j > 0; i++, j--){
+        accumulator += rows[i][j];
+        if ( accumulator > 1 ){
+          return true;
+        }
+      }
       return false; // fixme
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      var rows = this.rows();
+      // iterate through rows at particular indexes
+      for ( var i = rows.length -1; i > 0; i--){
+        if( this.hasMinorDiagonalConflictAt(i)){
+          return true;
+        }
+      }
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
