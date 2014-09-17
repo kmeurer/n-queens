@@ -7,9 +7,9 @@
   window.Board = Backbone.Model.extend({
     initialize: function (params) {
       if (_.isUndefined(params) || _.isNull(params)) {
-        // console.log('Good guess! But to use the Board() constructor, you must pass it an argument in one of the following formats:');
-        // console.log('\t1. An object. To create an empty board of size n:\n\t\t{n: %c<num>%c} - Where %c<num> %cis the dimension of the (empty) board you wish to instantiate\n\t\t%cEXAMPLE: var board = new Board({n:5})', 'color: blue;', 'color: black;','color: blue;', 'color: black;', 'color: grey;');
-        // console.log('\t2. An array of arrays (a matrix). To create a populated board of size n:\n\t\t[ [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...] ] - Where each %c<val>%c is whatever value you want at that location on the board\n\t\t%cEXAMPLE: var board = new Board([[1,0,0],[0,1,0],[0,0,1]])', 'color: blue;', 'color: black;','color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: grey;');
+        console.log('Good guess! But to use the Board() constructor, you must pass it an argument in one of the following formats:');
+        console.log('\t1. An object. To create an empty board of size n:\n\t\t{n: %c<num>%c} - Where %c<num> %cis the dimension of the (empty) board you wish to instantiate\n\t\t%cEXAMPLE: var board = new Board({n:5})', 'color: blue;', 'color: black;','color: blue;', 'color: black;', 'color: grey;');
+        console.log('\t2. An array of arrays (a matrix). To create a populated board of size n:\n\t\t[ [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...] ] - Where each %c<val>%c is whatever value you want at that location on the board\n\t\t%cEXAMPLE: var board = new Board([[1,0,0],[0,1,0],[0,0,1]])', 'color: blue;', 'color: black;','color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: grey;');
       } else if (params.hasOwnProperty('n')) {
         this.set(makeEmptyMatrix(this.get('n')));
       } else {
@@ -152,19 +152,26 @@
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
       var rows = this.rows();
       var accumulator = 0;
-      // iterate through rows
-      for( var i = 0, j = majorDiagonalColumnIndexAtFirstRow; i < rows.length && j < rows.length; i++, j++){
-        accumulator += rows[i][j];
-        if ( accumulator > 1 ){
-          return true;
+      if( majorDiagonalColumnIndexAtFirstRow === 0 ){
+        for( var t = 0; t < rows.length - 1; t++){
+          accumulator = 0;
+          for( var i = t, j = majorDiagonalColumnIndexAtFirstRow; i < rows.length && j < rows.length; i++, j++){
+            accumulator += rows[i][j];
+            if ( accumulator > 1 ){
+              return true;
+            }
+          }
+        }
+      } else{
+        // iterate through rows
+        for( var i = 0, j = majorDiagonalColumnIndexAtFirstRow; i < rows.length && j < rows.length; i++, j++){
+          accumulator += rows[i][j];
+          if ( accumulator > 1 ){
+            return true;
+          }
         }
       }
       return false;
-
-
-      // if majorDiagonalColumnIndexAtFirstRow is 0
-        // test normally
-        // test again until testing an array with
     },
 
     // test if any major diagonals on this board contain conflicts
@@ -186,14 +193,26 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-
       var rows = this.rows();
       var accumulator = 0;
-      // iterate through rows
-      for( var i = 0, j = minorDiagonalColumnIndexAtFirstRow; i < rows.length && j > -1; i++, j--){
-        accumulator += rows[i][j];
-        if ( accumulator > 1 ){
-          return true;
+      if(minorDiagonalColumnIndexAtFirstRow === rows.length - 1){
+        // Calculate it for the first case
+        for ( var t = 0; t < rows.length - 1; t++){
+          accumulator = 0;
+          for( var i = t, j = minorDiagonalColumnIndexAtFirstRow; i < rows.length && j > -1; i++, j--){
+            accumulator += rows[i][j];
+            if ( accumulator > 1 ){
+              return true;
+            }
+          }
+        }
+      } else{
+        // iterate through rows
+        for( var i = 0, j = minorDiagonalColumnIndexAtFirstRow; i < rows.length && j > -1; i++, j--){
+          accumulator += rows[i][j];
+          if ( accumulator > 1 ){
+            return true;
+          }
         }
       }
       return false;
@@ -204,7 +223,7 @@
       var rows = this.rows();
       // iterate through rows at particular indexes
       for ( var i = 1; i < rows.length; i++){
-        if( this.hasMinorDiagonalConflictAt(i)){
+        if( this.hasMinorDiagonalConflictAt(i) ){
           return true;
         }
       }
