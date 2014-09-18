@@ -14,19 +14,54 @@
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined;
+
   var board = new Board({n: n});
   var rows = board.rows();
-  var findSolution = function(currentBoard) {
-    // check for conflicts
-
-    // if no conflicts
-      // if all rows filled
-        // return currentBoard
-      //else
-        // Add rook to currentBoard by iteratively calling findSol
+  board.currentRow = 0;
+  // if(n === 1){
+  //   var rows = board.rows();
+  //   rows[0][0] = 1;
+  //   console.log("pass that shit");
+  //   return rows;
+  // }
+  for (var i = 0; i < rows.length; i++){
+    rows[i][i] = 1;
   }
+  solution = rows;
 
+  // var findSolution = function(currentBoard) {
+
+
+
+
+  //   //   console.log("current Row is: " + currentBoard.currentRow);
+  //   //   currentBoard.currentRow++;
+  //   // // check for conflicts
+  //   // // if no conflicts
+  //   // if( !board.hasAnyRowConflicts() && !board.hasAnyColConflicts()) {
+  //   //   // if all rows filled
+  //   //   if(currentBoard.currentRow - 1 === n ) {
+  //   //     // return currentBoard
+  //   //     return currentBoard.rows();
+  //   //   } else {
+  //   //     var rows = currentBoard.rows();
+  //   //     for(var i = 0; i < n; i++) {
+  //   //       var newBoard = new Board(rows);
+  //   //       var newRows = newBoard.rows();
+  //   //       newBoard.currentRow = currentBoard.currentRow;
+  //   //       console.log(newBoard.currentRow);
+  //   //       console.log(newBoard);
+
+  //   //       newRows[newBoard.currentRow - 1][i] = 1;
+  //   //       findSolution(newBoard);
+  //   //     }
+  //   //   }
+
+  //   //   //else
+  //   //     // Add rook to currentBoard by iteratively calling findSol
+  //   // }
+  // }
+  // var solution = findSolution(board);
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
