@@ -16,52 +16,37 @@
 window.findNRooksSolution = function(n) {
 
   var board = new Board({n: n});
-  var rows = board.rows();
   board.currentRow = 0;
-  // if(n === 1){
-  //   var rows = board.rows();
-  //   rows[0][0] = 1;
-  //   console.log("pass that shit");
-  //   return rows;
-  // }
-  for (var i = 0; i < rows.length; i++){
-    rows[i][i] = 1;
+  var results = [];
+  var findSolution = function(currentBoard) {
+    // debugger;
+    if( (currentBoard.currentRow === n) && !(currentBoard.hasAnyRowConflicts() || currentBoard.hasAnyColConflicts())) {
+      results.push(currentBoard.rows());
+      return;
+    } else if(currentBoard.currentRow === n) {
+      return;
+    } else if (currentBoard.hasAnyRowConflicts() || currentBoard.hasAnyColConflicts()){
+      return;
+    } else {
+      var allBoards = [];
+      for(var i = 0; i < n; i++) {
+        var rows = _.map(currentBoard.rows(), function(el){
+          return el.slice();
+        });
+        var aBoard = new Board(rows); //instantiate new board
+        aBoard.currentRow = currentBoard.currentRow + 1; //increment in preparation for next function iteration
+        allBoards.push(aBoard); //push new boards to a storage array
+      }
+      for(var i = 0; i < n; i++){
+        allBoards[i].rows()[currentBoard.currentRow][i] = 1;
+      }
+      allBoards.forEach(function(el){
+        findSolution(el);
+      });
+    }
   }
-  solution = rows;
-
-  // var findSolution = function(currentBoard) {
-
-
-
-
-  //   //   console.log("current Row is: " + currentBoard.currentRow);
-  //   //   currentBoard.currentRow++;
-  //   // // check for conflicts
-  //   // // if no conflicts
-  //   // if( !board.hasAnyRowConflicts() && !board.hasAnyColConflicts()) {
-  //   //   // if all rows filled
-  //   //   if(currentBoard.currentRow - 1 === n ) {
-  //   //     // return currentBoard
-  //   //     return currentBoard.rows();
-  //   //   } else {
-  //   //     var rows = currentBoard.rows();
-  //   //     for(var i = 0; i < n; i++) {
-  //   //       var newBoard = new Board(rows);
-  //   //       var newRows = newBoard.rows();
-  //   //       newBoard.currentRow = currentBoard.currentRow;
-  //   //       console.log(newBoard.currentRow);
-  //   //       console.log(newBoard);
-
-  //   //       newRows[newBoard.currentRow - 1][i] = 1;
-  //   //       findSolution(newBoard);
-  //   //     }
-  //   //   }
-
-  //   //   //else
-  //   //     // Add rook to currentBoard by iteratively calling findSol
-  //   // }
-  // }
-  // var solution = findSolution(board);
+  findSolution(board);
+  var solution = results[0];
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };
@@ -70,10 +55,38 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0; //fixme
   var board = new Board({n: n});
-  var rows = board.rows();
-  var count = 0;
+  board.currentRow = 0;
+  var findSolution = function(currentBoard) {
+    // debugger;
+    if( (currentBoard.currentRow === n) && !(currentBoard.hasAnyRowConflicts() || currentBoard.hasAnyColConflicts())) {
+      solutionCount++;
+      return;
+    } else if(currentBoard.currentRow === n) {
+      return;
+    } else if (currentBoard.hasAnyRowConflicts() || currentBoard.hasAnyColConflicts()){
+      return;
+    } else {
+      var allBoards = [];
+      for(var i = 0; i < n; i++) {
+        var rows = _.map(currentBoard.rows(), function(el){
+          return el.slice();
+        });
+        var aBoard = new Board(rows); //instantiate new board
+        aBoard.currentRow = currentBoard.currentRow + 1; //increment in preparation for next function iteration
+        allBoards.push(aBoard); //push new boards to a storage array
+      }
+      for(var i = 0; i < n; i++){
+        allBoards[i].rows()[currentBoard.currentRow][i] = 1;
+      }
+      allBoards.forEach(function(el){
+        findSolution(el);
+      });
+    }
+  }
+  findSolution(board);
+  var solution = solutionCount;
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
@@ -82,7 +95,39 @@ window.countNRooksSolutions = function(n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+  var board = new Board({n:n});
+  board.currentRow = 0;
+  var results = [];
+
+  var findSolution = function(currentBoard) {
+    if((currentBoard.currentRow === n) && !(currentBoard.hasAnyRowConflicts() || currentBoard.hasAnyColConflicts()||
+                          currentBoard.hasAnyMajorDiagonalConflicts() || currentBoard.hasAnyMinorDiagonalConflicts())) {
+      results.push(currentBoard.rows());
+    } else if(currentBoard.currentRow === n) {
+      return;
+    } else if(currentBoard.hasAnyRowConflicts() || currentBoard.hasAnyColConflicts() ||
+              currentBoard.hasAnyMinorDiagonalConflicts() || currentBoard.hasAnyMajorDiagonalConflicts()) {
+      return;
+    } else {
+      var allBoards = [];
+      for(var i = 0; i < n; i++) {
+        var rows = _.map(currentBoard.rows(), function(el){
+          return el.slice();
+        });
+        var aBoard = new Board(rows);
+        aBoard.currentRow = currentBoard.currentRow + 1;
+        allBoards.push(aBoard);
+      }
+      for(var i = 0; i < n; i++) {
+        allBoards[i].rows()[currentBoard.currentRow][i] = 1;
+      }
+      allBoards.forEach(function(el) {
+        findSolution(el);
+      });
+    }
+  }
+  findSolution(board);
+  var solution = results[0]; //fixme
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
