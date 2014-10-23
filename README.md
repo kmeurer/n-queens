@@ -1,2 +1,2 @@
 #n-queens
-This is a project I completed as a student at [Hack Reactor](http://hackreactor.com). This project was worked on with a pair.
+A completed recursive algorithm to solve the famous N-Queens problem. It is somewhat optimized, though I would like to reimpliment it using bit strings.
